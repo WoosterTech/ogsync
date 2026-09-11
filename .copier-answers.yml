@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier. Do not edit manually.
+_commit: v0.3.5
+_src_path: gh:WoosterTech/simple-modern-uv
+copyright_year: '2026'
+license: MIT
+package_author_email: karl@woostertech.com
+package_author_name: Karl Wooster
+package_cli_name: ogsync
+package_description: Sync Outlook events to Google Calendar using COM.
+package_env_prefix: OGSYNC
+package_github_org: WoosterTech
+package_module: ogsync
+package_name: ogsync

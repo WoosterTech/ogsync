@@ -1,0 +1,74 @@
+# Configuration file for `prek`, a git hook framework written in Rust.
+# See https://prek.j178.dev for more information.
+#:schema https://www.schemastore.org/prek.json
+
+ci = {
+  autoupdate_schedule = "weekly",
+  skip = ["pip-audit"],
+  submodules = false
+}
+default_stages = ["pre-commit"]
+exclude = "(tests)/.*"
+default_language_version.python = "3.12"
+
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+  { id = "debug-statements" },
+  { id = "check-builtin-literals" },
+  { id = "check-docstring-first" }
+]
+
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "trailing-whitespace" },
+  { id = "end-of-file-fixer" },
+  { id = "check-toml" },
+  { id = "check-xml" },
+  { id = "check-yaml" },
+  # { id = "debug-statements" },
+  # { id = "check-builtin-literals" },
+  { id = "check-case-conflict" },
+  # { id = "check-docstring-first" },
+  { id = "detect-private-key" },
+  { id = "check-merge-conflict" },
+  { id = "check-symlinks" },
+  { id = "check-added-large-files" },
+  { id = "no-commit-to-branch", args = ["-b", "main"] }
+]
+
+[[repos]]
+repo = "https://gitlab.com/bmares/check-json5"
+rev = "v1.0.1"
+hooks = [{ id = "check-json5" }]
+
+# TODO: add back if docker can be expected to exist in all environments
+# [[repos]]
+# repo = "https://github.com/iamthefij/docker-pre-commit"
+# rev = "v3.0.1"
+# hooks = [{ id = "docker-compose-check" }]
+
+[[repos]]
+repo = "https://github.com/pypa/pip-audit"
+rev = "v2.10.0"
+hooks = [{ id = "pip-audit", args = [".", "-vvv"] }]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.12"
+hooks = [
+  { id = "ruff-check", args = ["--fix", "--config", "ruff.toml"] },
+  { id = "ruff-format" }
+]
+
+[[repos]]
+repo = "https://github.com/commitizen-tools/commitizen"
+rev = "v4.16.0"
+hooks = [{ id = "commitizen" }]
+
+[[repos]]
+repo = "https://github.com/fpgmaas/deptry.git"
+rev = "0.25.1"
+hooks = [{ id = "deptry" }]
