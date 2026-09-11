@@ -3,14 +3,10 @@ from typing import Annotated
 import typer
 
 from .core import GlobalCLIOptions, ProjectContext
-from .devtools import app as devtools_cli
 from .logging_config import get_console, verbosity_option
 
 cli = typer.Typer(help="Main CLI for ogsync.")
 console = get_console()
-
-# !devtools should be the last subcommand added to ensure it appears at the end of the help output.
-cli.add_typer(devtools_cli, name="devtools", help="Developer tools for ogsync.")
 
 
 @cli.callback()

@@ -1,6 +1,7 @@
 """Project level core functionality that doesn't fit into a more specific module."""
 
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from os import PathLike
 
 from typer import Context
@@ -26,3 +27,8 @@ class ProjectContext(Context):
     """Custom Typer Context that adds the proper typing for `obj`."""
 
     obj: GlobalCLIOptions
+
+
+def now_utc() -> datetime:
+    """Get the timezone-aware current UTC datetime."""
+    return datetime.now(UTC)
