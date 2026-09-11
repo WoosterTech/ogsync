@@ -1,6 +1,7 @@
 """Project level core functionality that doesn't fit into a more specific module."""
 
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from os import PathLike
 
 from typer import Context
@@ -26,3 +27,20 @@ class ProjectContext(Context):
     """Custom Typer Context that adds the proper typing for `obj`."""
 
     obj: GlobalCLIOptions
+
+
+def now_utc() -> datetime:
+    """Get the timezone-aware current UTC datetime."""
+    return datetime.now(UTC)
+
+
+def truncate_id(event_id: str | None, length: int = 8) -> str:
+    """Truncate an event ID to the specified length for easier display."""
+    return event_id[:length] if event_id is not None else ""
+
+
+def hash_id(event_id: str) -> str:
+    """Generate a short hash of the event ID for easier display or comparison."""
+    import hashlib
+
+    return hashlib.sha256(event_id.encode()).hexdigest()[:8]

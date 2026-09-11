@@ -29,9 +29,17 @@ classifiers = [
 ]
 # ---- Main dependencies ----
 dependencies = [
+  "attrmagic>=0.2.3",
+  "google>=3.0.0",
+  "google-api-python-client>=2.200.0",
+  "google-auth-oauthlib>=1.4.1",
+  "pydantic>=2.13.5",
   "pydantic-settings>=2.11.0",
+  "pywin32>=312",
   "rich>=14.0.0",
+  "sqlite-utils>=4.2.1",
   "typer>=0.24.1",
+  "tzdata>=2026.3 ; sys_platform == 'win32'",
 ]
 dynamic = ["version"]
 
@@ -43,6 +51,7 @@ Repository = "https://github.com/WoosterTech/ogsync"
 [project.scripts]
 # Add script entry points here:
 ogsync = "ogsync.ogsync:cli"
+ogsync-devtools = "ogsync.devtools:app"
 
 # ---- Build system ----
 
@@ -54,6 +63,7 @@ dev = [
   "basedpyright>=1.31.0",
   "codespell>=2.4.1",
   "deptry>=0.23.0",
+  "google-api-python-client-stubs>=1.40.0",
   "ipython>=9.8.0",
   "jinja2>=3.1.6",
   "prek>=0.4.3",
@@ -79,6 +89,12 @@ build-backend = "hatchling.build"
 # ---- Dev dependencies ----
 [tool.deptry]
 extend_exclude = ["src/ogsync/devtools\\.py"]
+known_first_party = ["ogsync"]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "tzdata",  # required for time zone support on Windows
+  ]
 
 [tool.hatch.version]
 source = "uv-dynamic-versioning"

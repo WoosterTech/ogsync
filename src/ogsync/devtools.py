@@ -5,7 +5,6 @@ from typing import Annotated, ClassVar
 import typer
 from jinja2 import Environment, PackageLoader, Template
 
-from .core import ProjectContext
 from .logging_config import get_console, get_logger
 
 logger = get_logger(__name__)
@@ -98,13 +97,15 @@ def _write_module(target: Path, force: bool, *, dry_run: bool = False) -> None:
 
 @app.command("create-module")
 def create_module(
-    ctx: ProjectContext,
     module_path: str,
     package: Annotated[
         bool, typer.Option("-p", "--package", help="Create as a package (with __init__.py)")
     ] = False,
     force: Annotated[
         bool, typer.Option("-f", "--force", help="Overwrite existing module if it exists")
+    ] = False,
+    dry_run: Annotated[
+        bool, typer.Option("-d", "--dry-run", help="Simulate actions without making changes")
     ] = False,
 ) -> None:
     """Create a new Python module with default logger setup.
@@ -113,10 +114,8 @@ def create_module(
     filesystem path (e.g., "reports/new/module.py"). All parent packages and
     __init__.py files are created as needed.
     """
-    context = ctx.obj
-    _dry_run = context.dry_run
 
-    if _dry_run:
+    if dry_run:
         console.log(
             "[yellow]Dry run mode enabled. The following actions would be performed:[/yellow]"
         )
@@ -131,11 +130,11 @@ def create_module(
                 f"Module path must stay within package root: {PACKAGE_ROOT}"
             ) from exc
 
-        _ensure_package_inits(target, dry_run=_dry_run)
+        _ensure_package_inits(target, dry_run=dry_run)
         console.log(
             f"[bold green]Ensured package __init__.py files up to [/bold green][u cyan]{target.parent}[/]"
         )
-        _write_module(target, force=force, dry_run=_dry_run)
+        _write_module(target, force=force, dry_run=dry_run)
         console.log(f"[bold green]Wrote module file at [/bold green][u repr.filename]{target}[/]")
 
     console.rule("[bold green]Module created successfully![/bold green]")
