@@ -2,19 +2,20 @@
 
 import datetime as dt
 from enum import StrEnum
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Self, override
 from zoneinfo import ZoneInfo
 
 from attrmagic import ClassBase, SimpleListRoot
 from pydantic import Field, field_validator, model_validator
 
-from ogsync.core import now_utc
+from ogsync.core import hash_id, now_utc
 from ogsync.identity import generated_event_id
 from ogsync.logging_config import get_logger
 from ogsync.settings import settings
 
 if TYPE_CHECKING:
     from pydantic.config import ExtraValues
+    from rich.repr import RichReprResult
 
 logger = get_logger(__name__)
 
@@ -182,6 +183,21 @@ class CalendarEvent(ClassBase):
         if self.end_time is None:
             return self.start_time >= now
         return self.end_time >= now
+
+    @override
+    def __str__(self) -> str:
+        return f"CalendarEvent(id={self.id}, title={self.title}, start_time={self.start_time}, end_time={self.end_time}, all_day={self.all_day}, location={self.location}, recurrence_rule={self.recurrence_rule}, recurrence_id={self.recurrence_id})"
+
+    @override
+    def __rich_repr__(self) -> "RichReprResult":
+        yield "id", f"{hash_id(self.id or '')}(hashed)"
+        yield "title", self.title
+        yield "start_time", self.start_time.isoformat()
+        yield "end_time", self.end_time.isoformat() if self.end_time is not None else None
+        yield "all_day", self.all_day
+        yield "location", self.location
+        yield "recurrence_rule", self.recurrence_rule
+        yield "recurrence_id", f"{hash_id(self.recurrence_id or '')}(hashed)"
 
 
 class CalendarEvents(SimpleListRoot[CalendarEvent]):

@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, cast, override
 
 from ogsync.adapters.base import CalendarSource
 from ogsync.connections.outlook import get_categorized_events
+from ogsync.core import hash_id
 from ogsync.logging_config import get_logger
 from ogsync.models import CalendarEvents, EventStatus
 from ogsync.settings import settings
@@ -140,7 +141,8 @@ class OutlookSource(CalendarSource):
     @classmethod
     def _appointment_to_data(cls, appointment: "win32com.client.CDispatch") -> dict[str, object]:
         data: dict[str, object] = {
-            "id": appointment.EntryID,  # pyright: ignore[reportAny]
+            # Recurring events in Outlook share the same EntryID, so using it as a unique identifier can be problematic.
+            # let CalendarEvent generate its own ID based on the other fields
             "title": appointment.Subject,  # pyright: ignore[reportAny]
             "start_time": cls._as_utc_datetime(appointment.StartUTC),  # pyright: ignore[reportAny]
             "end_time": cls._as_utc_datetime(appointment.EndUTC),  # pyright: ignore[reportAny]
@@ -160,7 +162,8 @@ class OutlookSource(CalendarSource):
     @override
     def get_events(self, days_ahead: int = 90) -> CalendarEvents:
         events = get_categorized_events(self.category, days_ahead=days_ahead)
-        logger.debug(f"First event dir: {dir(events[0]) if events else 'No events'}")
+        logger.debug(f"Retrieved ids (hashed): {[hash_id(event.EntryID) for event in events]}")  # pyright: ignore[reportAny]
+        logger.trace(f"First event dir: {dir(events[0]) if events else 'No events'}")
         return CalendarEvents.model_validate(self._items_to_data(events))
 
 

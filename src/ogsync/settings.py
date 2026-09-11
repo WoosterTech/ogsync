@@ -9,6 +9,7 @@ Additional settings can be added as needed.
 
 import logging
 from functools import cached_property
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -22,6 +23,13 @@ class Settings(BaseSettings):
         env_prefix="OGSYNC_",
         extra="ignore",
     )
+
+    google_calendar_id: str
+    default_sync_window_days: int = 90
+    google_client_secret_path: Path = Path("client_secret.json")
+    google_token_path: Path = Path("token.json")
+
+    state_db_path: Path = Path("ogsync_state.db")
 
     debug: bool = False
     log_level: str | None = None
@@ -41,4 +49,4 @@ class Settings(BaseSettings):
         return ZoneInfo(self.default_time_zone)
 
 
-settings = Settings()
+settings = Settings()  # pyright: ignore[reportCallIssue]

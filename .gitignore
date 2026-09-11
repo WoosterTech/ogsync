@@ -5,6 +5,8 @@ AGENTS.md
 # Additions to standard GitHub .gitignore:
 *.bak
 *.orig
+client_secret.json
+token.json
 tmp/
 trash/
 attic/
@@ -181,3 +183,4 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+ogsync_state.db

@@ -138,7 +138,7 @@ def setup_logging(rich_tracebacks: bool = True) -> None:
             markup=True,
             show_time=True,
             show_level=True,
-            show_path=False,
+            show_path=True,
             tracebacks_show_locals=True,
             console=_console.console,
         )
@@ -272,5 +272,8 @@ def set_log_level(verbosity: int) -> None:
         verbosity (int): The verbosity count from command-line options.
     """
     level = LEVEL_MAPPING[verbosity]
+    third_party_level = LEVEL_MAPPING[max(0, verbosity - 1)]
 
     logging.getLogger().setLevel(level)
+    # HACK: attempting to decrease third party logs to decrease noise
+    logging.getLogger("googleapiclient").setLevel(third_party_level)
